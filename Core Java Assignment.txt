@@ -1,0 +1,146 @@
+Qustion No-1
+--------------------
+class Rectangle {
+    private double length;
+    private double width;
+
+    public void setRectangle(double length, double width) {
+        this.length = length;
+        this.width = width;
+    }
+
+    public double getArea() {
+        return length * width;
+    }
+}
+
+class Box extends Rectangle {
+    private double height;
+
+    public void setBox(double length, double width, double height) {
+        setRectangle(length, width);
+        this.height = height;
+    }
+
+    public double getVolume() {
+        return getArea() * height;
+    }
+}
+
+    public static void main(String[] args) {
+        Box box = new Box();
+        box.setBox(4.0, 5.0, 6.0);
+        
+        double volume = box.getVolume();
+        System.out.println("Box Volume: " + volume);
+    }
+}
+
+Qustion No-2
+--------------
+import java.util.*;
+
+class Product implements Comparable<Product> {
+    private int productId;
+    private String productName;
+    private String productType;
+    private String productCategory;
+    private double productPrice;
+
+    public Product(int productId, String productName, String productType, String productCategory, double productPrice) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productType = productType;
+        this.productCategory = productCategory;
+        this.productPrice = productPrice;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public String getProductType() {
+        return productType;
+    }
+
+    public String getProductCategory() {
+        return productCategory;
+    }
+
+    public double getProductPrice() {
+        return productPrice;
+    }
+
+    
+    public int compareTo(Product other) {
+        return Double.compare(this.productPrice, other.productPrice);
+    }
+
+    
+    public String toString() {
+        return "Product{" +
+                "productId=" + productId +
+                ", productName='" + productName + '\'' +
+                ", productType='" + productType + '\'' +
+                ", productCategory='" + productCategory + '\'' +
+                ", productPrice=" + productPrice +
+                '}';
+    }
+}
+
+class ProductComparator implements Comparator<Product> {
+    
+    public int compare(Product p1, Product p2) {
+        int categoryComparison = p1.getProductCategory().compareTo(p2.getProductCategory());
+        if (categoryComparison == 0) {
+            return Double.compare(p1.getProductPrice(), p2.getProductPrice());
+        }
+        return categoryComparison;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<Product> products = new ArrayList<>();
+
+        while (true) {
+            System.out.println("Enter the product details:");
+            System.out.print("Enter product id: ");
+            int productId = scanner.nextInt();
+            scanner.nextLine(); 
+            System.out.print("Enter product Name: ");
+            String productName = scanner.nextLine();
+            System.out.print("Enter product category: ");
+            String productCategory = scanner.nextLine();
+            System.out.print("Enter product price: ");
+            double productPrice = scanner.nextDouble();
+
+            Product newProduct = new Product(productId, productName, "", productCategory, productPrice);
+            boolean isDuplicate = products.stream().anyMatch(p -> p.getProductId() == newProduct.getProductId());
+            if (!isDuplicate) {
+                products.add(newProduct);
+            } else {
+                System.out.println("Product with the same ID already exists.");
+            }
+
+            System.out.print("Do you want to enter another product? (yes/no): ");
+            String continueInput = scanner.next();
+            if (!continueInput.equalsIgnoreCase("yes")) {
+                break;
+            }
+        }
+
+        Collections.sort(products);
+        System.out.println("Products sorted by price:");
+        products.forEach(System.out::println);
+
+        Collections.sort(products, new ProductComparator());
+        System.out.println("Products sorted by category and price:");
+        products.forEach(System.out::println);
+    }
+}
